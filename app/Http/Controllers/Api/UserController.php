@@ -46,6 +46,7 @@ class UserController extends Controller
                 status: 200,
                 success:true
             );
+            
         } catch (Exception $e) {
             return $this->errorResponse(
                 message: 'Failed to retrieve users.',
@@ -188,13 +189,15 @@ class UserController extends Controller
             return $this->errorResponse(
                 message: 'The provided credentials are incorrect or invalid.',
                 status: 401,
-                errors: $e->errors()
+                errors: $e->errors(),
+                success:false
             );
         } catch (Exception $e) {
             Log::info('ERROR:123 --' .  $e->getMessage());
             return $this->errorResponse(
                 message: 'Login failed. Please try again later.',
-                status: 500
+                status: 500,
+                success:false
             );
         }
     }
@@ -231,15 +234,17 @@ class UserController extends Controller
     public function user(Request $request)
     {
         try {
-            $user = $this->userService->getAuthenticatedUser($request->user());
+            $user = $this->userService->getAuthenticatedUser($request);
 
             return $this->successResponse(
                 data: ['user' => $user],
-                message: 'User profile retrieved successfully'
+                message: 'User profile retrieved successfully',
+               success:true
             );
         } catch (Exception $e) {
             return $this->errorResponse(
                 message: 'Failed to retrieve user profile.',
+                success:false,
                 status: 500
             );
         }

@@ -124,9 +124,13 @@ class UserService
         $user->token()->revoke();
     }
 
-    public function getAuthenticatedUser(User $user): User
+    public function getAuthenticatedUser($request): array
     {
-        return $user->load('roles', 'permissions');
+         return [
+        'user_id' => $request->user()->id,
+        'roles' => $request->user()->roles->pluck('name'),
+        'permissions' => $request->user()->permissions->pluck('name'),
+         ];
     }
 
     /* ---------------- ROLE MANAGEMENT ---------------- */
