@@ -65,14 +65,13 @@ COPY ./nginx.conf.template /etc/nginx/sites-available/default.template
 COPY ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # ========================
-# Step 10: Copy and set entrypoint
+# Step 10: Copy entrypoint script
 # ========================
 COPY ./entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
+# ========================
+# Step 11: Use entrypoint to substitute PORT and start Supervisor
+# ========================
 ENTRYPOINT ["/entrypoint.sh"]
-
-# ========================
-# Step 11: Start Supervisor (runs PHP-FPM + Nginx + migrations/seeders)
-# ========================
 CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/conf.d/supervisord.conf"]

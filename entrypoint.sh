@@ -1,8 +1,17 @@
 #!/bin/sh
 set -e
 
-# Substitute env vars into Nginx config
+echo "Using PORT from Railway: $PORT"
+
+# Substitute ${PORT} in the Nginx template
 envsubst '${PORT}' < /etc/nginx/sites-available/default.template > /etc/nginx/sites-available/default
 
-# Run the original CMD (Supervisor)
+# Verify the generated config (for debugging)
+echo "Generated Nginx config:"
+cat /etc/nginx/sites-available/default
+
+# Test Nginx config syntax
+nginx -t
+
+# Start Supervisor (which starts PHP-FPM and Nginx)
 exec "$@"
