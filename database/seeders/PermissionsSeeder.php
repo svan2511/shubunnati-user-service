@@ -18,14 +18,13 @@ class PermissionsSeeder extends Seeder
             'roles',
         ];
 
-        $actions = ['create','view','edit', 'delete'];
+        $actions = ['create', 'view', 'edit', 'delete'];
 
         foreach ($modules as $module) {
             foreach ($actions as $action) {
 
                 $permissionName = "{$action}-{$module}";
-               // $label = ucfirst($action) . ' ' . ucfirst($module);
-                $desc  = "Can {$action} {$module}";
+                $desc = "Can {$action} {$module}";
 
                 Permission::firstOrCreate(
                     [
@@ -34,8 +33,21 @@ class PermissionsSeeder extends Seeder
                     ],
                     [
                         'module' => $module,
-                        //'label'  => $label,
-                        'desc'   => $desc,   // ← FIX ADDED
+                        'desc'   => $desc,
+                    ]
+                );
+            }
+
+            // ✅ EXTRA permission only for dashboard
+            if ($module === 'dashboard') {
+                Permission::firstOrCreate(
+                    [
+                        'name' => 'dashboard-stats',
+                        'guard_name' => 'api',
+                    ],
+                    [
+                        'module' => 'dashboard',
+                        'desc'   => 'Can view dashboard statistics',
                     ]
                 );
             }

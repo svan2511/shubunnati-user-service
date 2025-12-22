@@ -78,6 +78,7 @@ class UserController extends Controller
                 status: 201
             );
         } catch (ValidationException $e) {
+            Log::info('ERROR---'.$e->getMessage());
             return $this->validationErrorResponse($e->errors(), 'Validation failed');
         } catch (Exception $e) {
             Log::info('ERROR---'.$e->getMessage());

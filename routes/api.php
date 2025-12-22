@@ -11,7 +11,7 @@ Route::post('/register', [UserController::class, 'store']);   // Register new us
 Route::post('/login', [UserController::class, 'login']);      // Login and get token
 
 // Protected routes - Require valid Bearer token (Passport)
-Route::middleware('auth:api')->group(function () {
+Route::middleware(['auth:api','check.token.version'])->group(function () {
     
     Route::post('/logout', [UserController::class, 'logout']);
     Route::get('/user', [UserController::class, 'user']); 

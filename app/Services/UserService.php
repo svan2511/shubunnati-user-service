@@ -78,6 +78,7 @@ class UserService
         // Sync roles if provided
         if (isset($data['roles'])) {
             $user->syncRoles($data['roles']);
+            $user->increment('token_version');
         }
 
         return $user->refresh()->load('roles');
@@ -105,6 +106,7 @@ class UserService
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
+            'token_version' => $user->token_version,
 
             // ✅ clean RBAC data
             'roles' => $user->getRoleNames(), // collection of strings
@@ -130,6 +132,7 @@ class UserService
         'user_id' => $request->user()->id,
         'roles' => $request->user()->roles->pluck('name'),
         'permissions' => $request->user()->permissions->pluck('name'),
+        'token_version' => $request->user()->token_version
          ];
     }
 

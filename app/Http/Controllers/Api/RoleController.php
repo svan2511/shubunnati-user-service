@@ -113,6 +113,7 @@ class RoleController extends Controller
             );
 
         } catch (Exception $e) {
+            Log::info("ERROR:454--".$e->getMessage());
             return $this->errorResponse(
                 message: 'Failed to update role.',
                 status: 500,

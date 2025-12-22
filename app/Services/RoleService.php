@@ -66,9 +66,12 @@ class RoleService
             unset($data['permissions']);
 
             $role = $this->roleRepo->update($id, $data);
-
+           
             // 🔥 Sync permissions
             $role->syncPermissions($permissions);
+             foreach($role->users as $user) {
+                 $user->increment('token_version');
+             }
 
             return $role->load('permissions');
         });
