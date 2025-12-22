@@ -29,6 +29,7 @@ RUN apt-get update && apt-get install -y \
     libfreetype6-dev \
     supervisor \
     nginx \
+    gettext-base \
     && docker-php-ext-install pdo pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd zip intl opcache \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -54,9 +55,9 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 RUN composer install --no-dev --optimize-autoloader
 
 # ========================
-# Step 8: Copy Nginx configuration
+# Step 8: Copy Nginx configuration template
 # ========================
-COPY ./nginx.conf /etc/nginx/sites-available/default
+COPY ./nginx.conf.template /etc/nginx/sites-available/default.template
 
 # ========================
 # Step 9: Copy Supervisor configuration
@@ -64,9 +65,12 @@ COPY ./nginx.conf /etc/nginx/sites-available/default
 COPY ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # ========================
-# Step 10: Expose port 80
+# Step 10: Copy and set entrypoint
 # ========================
-EXPOSE 80
+COPY ./entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
 
 # ========================
 # Step 11: Start Supervisor (runs PHP-FPM + Nginx + migrations/seeders)
